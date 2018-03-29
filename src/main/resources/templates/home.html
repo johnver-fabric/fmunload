@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>FMU User Disable</title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <a class="navbar-brand" href="/home">TOOL</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/file">Disable
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="d-none">
+    <input type="hidden" id="totalcount" th:value="${total}">
+    <input type="hidden" id="enabledcount" th:value="${enabled}">
+    <input type="hidden" id="disabledcount" th:value="${disabled}">
+</div>
+<div class="container">
+    <canvas class="my-4" id="myChart" width="900" height="380"></canvas>
+</div>
+
+
+<script type="text/javascript" src="./js/Chart.min.js"></script>
+<script>
+    var total = document.getElementById('totalcount');
+    var enabled = document.getElementById('enabledcount');
+    var disabled = document.getElementById('disabledcount');
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Total", "Disabled", "Enabled"],
+            datasets: [{
+                data: [total.value, enabled.value, disabled.value],
+                lineTension: 0,
+                backgroundColor: 'transparent',
+                borderColor: '#007bff',
+                borderWidth: 4,
+                pointBackgroundColor: '#007bff'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: false
+                    }
+                }]
+            },
+            legend: {
+                display: false,
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
