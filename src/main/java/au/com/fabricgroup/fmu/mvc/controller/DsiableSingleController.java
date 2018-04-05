@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Controller
 public class DsiableSingleController {
@@ -19,17 +20,22 @@ public class DsiableSingleController {
     public String disableSingle(@RequestParam("username") String username, RedirectAttributes redirectAttributes) {
 //        redirectAttributes.addFlashAttribute("message", username);
 
-        UserProfile userProfile = userProfileRepository.findByUsername(username);
-        if (userProfile != null) {
-            if (userProfile.getDisabled().longValue() == 0L) {
-                userProfile.setDisabled(1L);
-                userProfileRepository.save(userProfile);
-                redirectAttributes.addFlashAttribute("message", userProfile.getUsername() + " has been disabled.");
-            } else {
-                redirectAttributes.addFlashAttribute("message", "Cannot process request as the user is already disabled.");
-            }
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9.@]+$");
+        if (!pattern.matcher(username).matches()) {
+            redirectAttributes.addFlashAttribute("message", "Invalid username.");
         } else {
-            redirectAttributes.addFlashAttribute("message", "Cannot find specified user profile.");
+            UserProfile userProfile = userProfileRepository.findByUsername(username);
+            if (userProfile != null) {
+                if (userProfile.getDisabled().longValue() == 0L) {
+                    userProfile.setDisabled(1L);
+                    userProfileRepository.save(userProfile);
+                    redirectAttributes.addFlashAttribute("message", userProfile.getUsername() + " has been disabled.");
+                } else {
+                    redirectAttributes.addFlashAttribute("message", "Cannot process request as the user is already disabled.");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Cannot find specified user profile.");
+            }
         }
         return "redirect:/file";
     }
